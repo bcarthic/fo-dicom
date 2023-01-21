@@ -32,7 +32,7 @@ namespace FellowOakDicom
         /// <param name="date">Tag associated with date value.</param>
         /// <param name="time">Tag associated with time value.</param>
         /// <returns>Composite <see cref="DateTime"/>.</returns>
-        public static DateTime GetDateTime(this DicomDataset dataset, DicomTag date, DicomTag time)
+        public static DateTime GetDateTime(this IEnumerable<DicomItem> dataset, DicomTag date, DicomTag time)
         {
             var dd = dataset.GetDicomItem<DicomDate>(date);
             var dt = dataset.GetDicomItem<DicomTime>(time);
@@ -51,7 +51,7 @@ namespace FellowOakDicom
         /// <param name="date">Tag associated with date value.</param>
         /// <param name="time">Tag associated with time value.</param>
         /// <returns>Composite <see cref="DateTimeOffset"/>.</returns>
-        public static DateTimeOffset GetDateTimeOffset(this DicomDataset dataset, DicomTag date, DicomTag time)
+        public static DateTimeOffset GetDateTimeOffset(this IEnumerable<DicomItem> dataset, DicomTag date, DicomTag time)
         {
             var dd = dataset.GetDicomItem<DicomDate>(date);
             var dt = dataset.GetDicomItem<DicomTime>(time);
@@ -85,7 +85,7 @@ namespace FellowOakDicom
         /// <param name="dataset">Dataset from which masked items should be retrieved.</param>
         /// <param name="mask">Requested mask.</param>
         /// <returns>Enumeration of masked DICOM items.</returns>
-        public static IEnumerable<DicomItem> EnumerateMasked(this DicomDataset dataset, DicomMaskedTag mask)
+        public static IEnumerable<DicomItem> EnumerateMasked(this IEnumerable<DicomItem> dataset, DicomMaskedTag mask)
             => dataset.Where(x => mask.IsMatch(x.Tag));
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace FellowOakDicom
         /// <param name="dataset">Dataset from which group items should be retrieved.</param>
         /// <param name="group">Requested group.</param>
         /// <returns>Enumeration of DICOM items for specified <paramref name="group"/>.</returns>
-        public static IEnumerable<DicomItem> EnumerateGroup(this DicomDataset dataset, ushort group)
+        public static IEnumerable<DicomItem> EnumerateGroup(this IEnumerable<DicomItem> dataset, ushort group)
             => dataset.Where(x => x.Tag.Group == group && x.Tag.Element != 0x0000);
 
 
