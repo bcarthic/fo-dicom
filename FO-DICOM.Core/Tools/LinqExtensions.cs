@@ -31,5 +31,8 @@ namespace FellowOakDicom.Tools
             => input.Where(o => o is T).Cast<T>();
 
 
+        public static bool IsOneOf<T>(this T value, params T[] values)
+            => values.Contains(value);
+
     }
 }

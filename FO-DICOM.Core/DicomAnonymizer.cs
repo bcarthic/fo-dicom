@@ -2,6 +2,7 @@
 // Licensed under the Microsoft Public License (MS-PL).
 
 using FellowOakDicom.IO.Buffer;
+using FellowOakDicom.Tools;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -382,8 +383,8 @@ namespace FellowOakDicom
         protected static bool IsOtherElement(DicomItem item)
         {
             var t = item.GetType();
-            return t == typeof(DicomOtherByte) || t == typeof(DicomOtherDouble) || t == typeof(DicomOtherFloat)
-                   || t == typeof(DicomOtherLong) || t == typeof(DicomOtherWord) || t == typeof(DicomUnknown);
+            return t.IsOneOf(typeof(DicomOtherByte), typeof(DicomOtherDouble), typeof(DicomOtherFloat), 
+                typeof(DicomOtherLong), typeof(DicomOtherWord), typeof(DicomUnknown));
         }
 
         /// <summary>Evaluates whether an element has a generic valueType</summary>
