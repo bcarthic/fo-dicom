@@ -17,7 +17,7 @@ namespace FellowOakDicom.Tests.Imaging
         public void ColorMap_Monochrome2ImageOptions_ReturnsMonochrome2ColorMap()
         {
             var file = DicomFile.Open(TestData.Resolve("CT1_J2KI"));
-            var options = GrayscaleRenderOptions.FromDataset(file.Dataset);
+            var options = GrayscaleRenderOptions.FromDataset(file.Dataset, 0);
             Assert.Same(ColorTable.Monochrome2, options.ColorMap);
         }
 
@@ -25,7 +25,7 @@ namespace FellowOakDicom.Tests.Imaging
         public void ColorMap_Setter_ReturnsSetColorMap()
         {
             var file = DicomFile.Open(TestData.Resolve("CT1_J2KI"));
-            var options = GrayscaleRenderOptions.FromDataset(file.Dataset);
+            var options = GrayscaleRenderOptions.FromDataset(file.Dataset, 0);
             options.ColorMap = ColorTable.Monochrome1;
             Assert.Same(ColorTable.Monochrome1, options.ColorMap);
         }
@@ -83,7 +83,7 @@ namespace FellowOakDicom.Tests.Imaging
                 new DicomCodeString(DicomTag.VOILUTFunction, voiLutFunction));
 
             var expected = GrayscaleRenderOptions.FromWindowLevel(dataset);
-            var actual = GrayscaleRenderOptions.FromDataset(dataset);
+            var actual = GrayscaleRenderOptions.FromDataset(dataset, 0);
 
             Assert.Equal(expected.WindowWidth, actual.WindowWidth);
             Assert.Equal(expected.WindowCenter, actual.WindowCenter);
@@ -144,7 +144,7 @@ namespace FellowOakDicom.Tests.Imaging
                 new DicomCodeString(DicomTag.VOILUTFunction, voiLutFunction));
 
             var expected = GrayscaleRenderOptions.FromImagePixelValueTags(dataset);
-            var actual = GrayscaleRenderOptions.FromDataset(dataset);
+            var actual = GrayscaleRenderOptions.FromDataset(dataset, 0);
 
             Assert.Equal(expected.WindowWidth, actual.WindowWidth);
             Assert.Equal(expected.WindowCenter, actual.WindowCenter);
@@ -267,7 +267,7 @@ namespace FellowOakDicom.Tests.Imaging
         {
             return new List<Func<DicomDataset, GrayscaleRenderOptions>>
             {
-                GrayscaleRenderOptions.FromDataset,
+                d => GrayscaleRenderOptions.FromDataset(d, 0),
                 GrayscaleRenderOptions.FromBitRange,
                 GrayscaleRenderOptions.FromMinMax,
                 GrayscaleRenderOptions.FromWindowLevel,
