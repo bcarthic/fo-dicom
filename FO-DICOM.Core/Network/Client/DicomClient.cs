@@ -6,6 +6,7 @@ using FellowOakDicom.Network.Client.Advanced.Association;
 using FellowOakDicom.Network.Client.Advanced.Connection;
 using FellowOakDicom.Network.Client.EventArguments;
 using FellowOakDicom.Network.Client.States;
+using FellowOakDicom.Network.Tls;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,9 +32,9 @@ namespace FellowOakDicom.Network.Client
         int Port { get; }
 
         /// <summary>
-        /// True if TLS security should be enabled, false otherwise.
+        /// A handler to initiate TLS security, if null then TLS is not enabled.
         /// </summary>
-        bool UseTls { get; }
+        ITlsInitiator TlsInitiator { get; }
 
         /// <summary>
         /// Calling Application Entity Title.
@@ -168,7 +169,7 @@ namespace FellowOakDicom.Network.Client
 
         public string Host { get; }
         public int Port { get; }
-        public bool UseTls { get; }
+        public ITlsInitiator TlsInitiator { get; }
         public string CallingAe { get; }
         public string CalledAe { get; }
         
@@ -201,14 +202,14 @@ namespace FellowOakDicom.Network.Client
         /// </summary>
         /// <param name="host">DICOM host.</param>
         /// <param name="port">Port.</param>
-        /// <param name="useTls">True if TLS security should be enabled, false otherwise.</param>
+        /// <param name="tlsInitiator">if null then no TLS is enabled, otherwise the handler to initiate TLS security.</param>
         /// <param name="callingAe">Calling Application Entity Title.</param>
         /// <param name="calledAe">Called Application Entity Title.</param>
         /// <param name="clientOptions">The options that further modify the behavior of this DICOM client</param>
         /// <param name="serviceOptions">The options that modify the behavior of the base DICOM service</param>
         /// <param name="logger">The logger</param>
         /// <param name="advancedDicomClientConnectionFactory">The advanced DICOM client factory that will be used to actually send the requests</param>
-        public DicomClient(string host, int port, bool useTls, string callingAe, string calledAe,
+        public DicomClient(string host, int port, ITlsInitiator tlsInitiator, string callingAe, string calledAe,
             DicomClientOptions clientOptions,
             DicomServiceOptions serviceOptions,
             ILogger logger,
@@ -216,7 +217,7 @@ namespace FellowOakDicom.Network.Client
         {
             Host = host;
             Port = port;
-            UseTls = useTls;
+            TlsInitiator = tlsInitiator;
             CallingAe = callingAe;
             CalledAe = calledAe;
             ClientOptions = clientOptions;
@@ -307,9 +308,8 @@ namespace FellowOakDicom.Network.Client
                             {
                                 Host = Host,
                                 Port = Port,
-                                UseTls = UseTls,
+                                TlsInitiator = TlsInitiator,
                                 NoDelay = ServiceOptions.TcpNoDelay,
-                                IgnoreSslPolicyErrors = ServiceOptions.IgnoreSslPolicyErrors,
                                 Timeout = TimeSpan.FromMilliseconds(ClientOptions.AssociationRequestTimeoutInMs)
                             },
                             RequestHandlers = new AdvancedDicomClientConnectionRequestHandlers

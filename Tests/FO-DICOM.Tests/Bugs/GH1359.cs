@@ -41,7 +41,8 @@ namespace FellowOakDicom.Tests.Bugs
                 defaultClientOptions,
                 defaultServiceOptions,
                 logManager,
-                advancedDicomClientConnectionFactory);
+                advancedDicomClientConnectionFactory,
+                Setup.ServiceProvider);
         }
 
         [Theory]

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) 2012-2021 fo-dicom contributors.
 // Licensed under the Microsoft Public License (MS-PL).
 
+using FellowOakDicom.Network.Tls;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,8 +17,6 @@ namespace FellowOakDicom.Network
         #region FIELDS
 
         private readonly TcpListener _listener;
-
-        private X509Certificate _certificate = null;
 
         #endregion
 
@@ -57,7 +55,7 @@ namespace FellowOakDicom.Network
 
         /// <inheritdoc />
         public async Task<INetworkStream> AcceptNetworkStreamAsync(
-            string certificateName,
+            ITlsAcceptor tlsAcceptor,
             bool noDelay,
             CancellationToken token)
         {
@@ -74,13 +72,8 @@ namespace FellowOakDicom.Network
                     var tcpClient = tcpClientTask.Result;
                     tcpClient.NoDelay = noDelay;
 
-                    if (!string.IsNullOrEmpty(certificateName) && _certificate == null)
-                    {
-                        _certificate = GetX509Certificate(certificateName);
-                    }
-
                     //  let DesktopNetworkStream to dispose tcpClient
-                    return new DesktopNetworkStream(tcpClient, _certificate, true);
+                    return new DesktopNetworkStream(tcpClient, tlsAcceptor, true);
                 }
 
                 Stop();
@@ -92,27 +85,6 @@ namespace FellowOakDicom.Network
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Get X509 certificate from the certificate store.
-        /// </summary>
-        /// <param name="certificateName">Certificate name.</param>
-        /// <returns>Certificate with the specified name.</returns>
-        private static X509Certificate GetX509Certificate(string certificateName)
-        {
-            var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
-
-            store.Open(OpenFlags.ReadOnly);
-            var certs = store.Certificates.Find(X509FindType.FindBySubjectName, certificateName, false);
-            store.Dispose();
-
-            if (certs.Count == 0)
-            {
-                throw new DicomNetworkException("Unable to find certificate for " + certificateName);
-            }
-
-            return certs[0];
         }
 
         #endregion

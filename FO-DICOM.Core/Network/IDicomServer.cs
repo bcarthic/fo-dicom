@@ -2,10 +2,11 @@
 // Licensed under the Microsoft Public License (MS-PL).
 
 using FellowOakDicom.Log;
+using FellowOakDicom.Network.Tls;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FellowOakDicom.Network
 {
@@ -69,12 +70,12 @@ namespace FellowOakDicom.Network
         /// </summary>
         /// <param name="ipAddress">IP address(es) for the server to listen to.</param>
         /// <param name="port">Port to which the server should be listening.</param>
-        /// <param name="certificateName">Certificate name for secure connections.</param>
+        /// <param name="tlsAcceptor">Handler to accept secure connections.</param>
         /// <param name="fallbackEncoding">Encoding to apply if no encoding is identified.</param>
         /// <param name="options">Service options.</param>
         /// <param name="userState">User state to be shared with the connected services.</param>
         /// <returns>Awaitable <see cref="Task"/>.</returns>
-        Task StartAsync(string ipAddress, int port, string certificateName, Encoding fallbackEncoding,
+        Task StartAsync(string ipAddress, int port, ITlsAcceptor tlsAcceptor, Encoding fallbackEncoding,
             DicomServiceOptions options, object userState);
 
         /// <summary>

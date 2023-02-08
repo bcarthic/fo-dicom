@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2012-2021 fo-dicom contributors.
 // Licensed under the Microsoft Public License (MS-PL).
 
+using FellowOakDicom.Network.Tls;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,10 +26,10 @@ namespace FellowOakDicom.Network
         /// <summary>
         /// Wait until a network stream is trying to connect, and return the accepted stream.
         /// </summary>
-        /// <param name="certificateName">Certificate name of authenticated connections.</param>
+        /// <param name="tlsAcceptor">Handler to accept authenticated connections.</param>
         /// <param name="noDelay">No delay?</param>
         /// <param name="token">Cancellation token.</param>
         /// <returns>Connected network stream.</returns>
-        Task<INetworkStream> AcceptNetworkStreamAsync(string certificateName, bool noDelay, CancellationToken token);
+        Task<INetworkStream> AcceptNetworkStreamAsync(ITlsAcceptor tlsAcceptor, bool noDelay, CancellationToken token);
     }
 }
