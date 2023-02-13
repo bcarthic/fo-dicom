@@ -24,7 +24,10 @@ namespace FellowOakDicom.Imaging
         public static DicomOverlayData FromBitmap(DicomDataset ds, IImage bitmap, Color32 mask)
         {
             ushort group = 0x6000;
-            while (ds.Contains(new DicomTag(group, DicomTag.OverlayBitPosition.Element))) group += 2;
+            while (ds.Contains(new DicomTag(group, DicomTag.OverlayBitPosition.Element)))
+            {
+                group += 2;
+            }
 
             var overlay = new DicomOverlayData(ds, group)
                               {
@@ -44,7 +47,10 @@ namespace FellowOakDicom.Imaging
             {
                 for (var x = 0; x < bitmap.Width; x++, p++)
                 {
-                    if (bitmap.GetPixel(x, y).Value == mask.Value) array[p] = true;
+                    if (bitmap.GetPixel(x, y).Value == mask.Value)
+                    {
+                        array[p] = true;
+                    }
                 }
             }
 

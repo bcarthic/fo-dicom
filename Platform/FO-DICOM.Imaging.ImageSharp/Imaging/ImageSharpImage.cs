@@ -64,7 +64,7 @@ namespace FellowOakDicom.Imaging
 
         #region Properties
 
-        public Image<Bgra32> RenderedImage => image;
+        public Image<Bgra32> RenderedImage => _image;
 
         #endregion
 
@@ -73,13 +73,13 @@ namespace FellowOakDicom.Imaging
         /// <inheritdoc />
         public override void Render(int components, bool flipX, bool flipY, int rotation)
         {
-            var data = new byte[pixels.ByteSize];
-            Marshal.Copy(pixels.Pointer, data, 0, pixels.ByteSize);
-            image = Image.LoadPixelData<Bgra32>(data, width, height);
+            var data = new byte[_pixels.ByteSize];
+            Marshal.Copy(_pixels.Pointer, data, 0, _pixels.ByteSize);
+            _image = Image.LoadPixelData<Bgra32>(data, _width, _height);
             var (flipMode, rotationMode) = GetFlipAndRotateMode(flipX, flipY, rotation);
             if (flipMode != FlipMode.None && rotationMode != RotateMode.None)
             {
-                image.Mutate(x => x.RotateFlip(rotationMode, flipMode));
+                _image.Mutate(x => x.RotateFlip(rotationMode, flipMode));
             }
         }
 
@@ -123,8 +123,8 @@ namespace FellowOakDicom.Imaging
         {
             foreach (var graphic in graphics)
             {
-                var layer = (graphic.RenderImage(null) as ImageSharpImage).image;
-                image.Mutate(ctx => ctx
+                var layer = (graphic.RenderImage(null) as ImageSharpImage)._image;
+                _image.Mutate(ctx => ctx
                     .DrawImage(layer, new Point(graphic.ScaledOffsetX, graphic.ScaledOffsetY), 1));
             }
         }
@@ -133,7 +133,7 @@ namespace FellowOakDicom.Imaging
         /// <inheritdoc />
         public override IImage Clone()
         {
-            return new ImageSharpImage(width, height, new PinnedIntArray(pixels.Data), image?.Clone());
+            return new ImageSharpImage(_width, _height, new PinnedIntArray(_pixels.Data), _image?.Clone());
         }
 
         #endregion
